@@ -2,8 +2,8 @@
 
    The whole list (items and ticks) lives in a Firebase Realtime Database at
      <db>/lists/<key>/bring/<itemId> = { who, cat, text, ord, done? }
-   and is read and written over plain HTTPS: no library, no login. <key> is a long random string that
-   only travels in the link (#k=...), so only people who have the link can see or change the list.
+   and is read and written over plain HTTPS: no library, no login. <key> comes from the trip password
+   (see core.js), so only people who know the password can see or change the list.
    Changes stream in live; changes made offline wait in a queue on the phone and go out later.
 
    To add or remove items from the Mac, use ~/sri-lanka-maldives-trip/site-admin/list.mjs. */
@@ -30,36 +30,15 @@
   ];
   var LIST = 'bring';
   var MAX_TEXT = 200;
-  var store = { key: 'mlsl-key', who: 'mlsl-who', cache: 'mlsl-bring-cache-v1', queue: 'mlsl-bring-queue-v1' };
+  var store = { who: 'mlsl-who', cache: 'mlsl-bring-cache-v1', queue: 'mlsl-bring-queue-v1' };
 
   var $ = function (id) { return document.getElementById(id); };
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   function lsJson(k, fallback) { try { return JSON.parse(localStorage.getItem(k)) || fallback; } catch (e) { return fallback; } }
 
-  // ---- where the data is -------------------------------------------------------------------------
-  var cfg = window.TRIP_CONFIG || {};
-  var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-  var dbRoot = cfg.db || '';
-  if (isLocal) {
-    // On the Mac the page talks to the stand-in database (site-admin/mock-db.mjs), or to ?db=<url>.
-    dbRoot = new URLSearchParams(location.search).get('db') || location.origin + '/db';
-  }
-  dbRoot = dbRoot.replace(/\/+$/, '');
-
-  function keyFrom(text) {
-    var m = /(?:^|[#&?])k=([A-Za-z0-9_-]{16,64})(?:$|[&#])/.exec(text || '');
-    if (m) return m[1];
-    return /^[A-Za-z0-9_-]{16,64}$/.test((text || '').trim()) ? text.trim() : '';
-  }
-  var key = keyFrom(location.hash);
-  if (key) lsSet(store.key, key);
-  else {
-    key = keyFrom(lsGet(store.key) || '');
-    // Put the key back in the address so a bookmark or "Add to Home Screen" keeps working.
-    if (key) { try { history.replaceState(null, '', location.pathname + location.search + '#k=' + key); } catch (e) {} }
-  }
-  function base() { return dbRoot + '/lists/' + key + '/' + LIST; }
+  // ---- where the data is ------------------------------------------------------------------------
+  function base() { return Trip.path(LIST); }
 
   // ---- state -------------------------------------------------------------------------------------
   var server = {};   // the list as the database last sent it
@@ -93,8 +72,8 @@
     return v;
   }
   function saveLocal() {
-    lsSet(store.cache, JSON.stringify({ key: key, items: server }));
-    lsSet(store.queue, JSON.stringify({ key: key, ops: queue }));
+    lsSet(store.cache, JSON.stringify({ key: Trip.keyTag(), items: server }));
+    lsSet(store.queue, JSON.stringify({ key: Trip.keyTag(), ops: queue }));
   }
 
   // ---- talking to the database -------------------------------------------------------------------
@@ -111,7 +90,7 @@
     flush();
   }
   function flush() {
-    if (sending || !queue.length || !key || !dbRoot) return;
+    if (sending || !queue.length || !Trip.hasKey()) return;
     sending = true;
     var op = queue[0];
     var url = base() + '/' + encodeURIComponent(op.id) + '.json';
@@ -153,6 +132,7 @@
   }
 
   var es = null, retry = null;
+  function stop() { if (es) es.close(); es = null; clearTimeout(retry); }
   function listen() {
     if (es) es.close();
     clearTimeout(retry);
@@ -160,7 +140,7 @@
     es = new EventSource(base() + '.json');
     es.addEventListener('put', function (e) { onEvent('put', JSON.parse(e.data)); });
     es.addEventListener('patch', function (e) { onEvent('patch', JSON.parse(e.data)); });
-    es.addEventListener('cancel', function () { es.close(); gate('This link no longer opens the list. Ask Rishabh for the current one.'); });
+    es.addEventListener('cancel', function () { stop(); Trip.lock('The password has changed. Enter the new one.'); });
     es.onopen = function () { online = true; showSync(); flush(); };
     es.onerror = function () {
       online = false; showSync();
@@ -177,7 +157,7 @@
   function start() {
     // One plain request first: it tells a wrong key (the database says no) apart from no internet.
     fetch(base() + '.json?shallow=true').then(function (r) {
-      if (r.status === 401 || r.status === 403) { gate('This link doesn\'t open the list. Check that you have the whole link, up to the very end.'); return; }
+      if (r.status === 401 || r.status === 403) { stop(); Trip.lock('The password has changed. Enter the new one.'); return; }
       listen();
     }).catch(function () { online = false; showSync(); listen(); });
   }
@@ -324,12 +304,6 @@
     });
   }
 
-  function gate(message) {
-    $('app').hidden = true;
-    $('gate').hidden = false;
-    if (message) $('gate-msg').textContent = message;
-  }
-
   // ---- buttons -----------------------------------------------------------------------------------
   PEOPLE.forEach(function (p) {
     $('who-' + p.id).addEventListener('click', function () {
@@ -354,22 +328,12 @@
     if (!confirm('Untick all ' + mine.length + ' ticked items on ' + name + '\'s list?')) return;
     mine.forEach(function (id) { change({ op: 'patch', id: id, val: { done: false } }); });
   });
-  $('gate-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var k = keyFrom($('gate-input').value);
-    if (!k) { $('gate-msg').textContent = 'That doesn\'t look like the link. Paste the whole link Rishabh sent.'; return; }
-    lsSet(store.key, k);
-    location.hash = 'k=' + k;
-    location.reload();
-  });
-
   // ---- go ----------------------------------------------------------------------------------------
-  if (!dbRoot) { gate('The shared list isn\'t connected yet.'); $('gate-form').hidden = true; return; }
-  if (!key) { gate(); return; }
-  var cached = lsJson(store.cache, {}), queued = lsJson(store.queue, {});
-  if (cached.key === key) server = clean(cached.items);
-  if (queued.key === key && Array.isArray(queued.ops)) queue = queued.ops;
-  $('app').hidden = false;
-  render(); showSync();
-  start();
+  Trip.init(function () {
+    var cached = lsJson(store.cache, {}), queued = lsJson(store.queue, {});
+    server = cached.key === Trip.keyTag() ? clean(cached.items) : {};
+    queue = queued.key === Trip.keyTag() && Array.isArray(queued.ops) ? queued.ops : [];
+    render(); showSync();
+    start();
+  });
 })();

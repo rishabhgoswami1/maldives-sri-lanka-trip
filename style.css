@@ -241,6 +241,9 @@ body.editing .row .acts { display: flex; }
   border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 12px;
 }
 .gate form button { margin: 0; background: var(--accent); border-color: var(--accent); color: #fff; }
+.gate form button:disabled { opacity: .6; }
+footer button { margin-top: 14px; }
+#plan + .sync, #days + .sync { margin: 2px 4px 0; }
 .foot-actions { text-align: center; margin-top: 18px; }
 footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 18px; }
 

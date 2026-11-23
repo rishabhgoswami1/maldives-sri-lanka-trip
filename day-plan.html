@@ -4,11 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
 <title>Day-by-day plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="hero"><div class="hero-inner"><a class="back" href="./">← What to bring</a><h1>Day-by-day plan</h1></div></div>
-<main><section><h2>🔒 Private</h2><p class="note">The plan is being moved behind a password. Back shortly.</p></section></main>
+<!-- The plan is not in this page. It is loaded from the database after the password (plan.js).
+     To change it: edit ~/sri-lanka-maldives-trip/site-admin/plan.json, then node site-admin/plan.mjs push -->
+<div class="hero"><div class="hero-inner">
+  <a class="back" href="./">← What to bring</a>
+  <h1>Day-by-day plan</h1>
+  <p id="subtitle"></p>
+</div></div>
+<main>
+
+<div id="app" hidden>
+  <nav class="days" id="days" aria-label="Jump to a day"></nav>
+  <div class="sync" id="sync" role="status" hidden></div>
+  <div id="plan"></div>
+</div>
+
+<section id="gate" class="gate" hidden>
+  <h2>🔒 Private</h2>
+  <p id="gate-msg">Enter the trip password.</p>
+  <form id="gate-form">
+    <input id="gate-input" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" placeholder="Password" aria-label="Trip password">
+    <button type="submit">Open</button>
+  </form>
+</section>
+
+<footer>Have a wonderful trip! 🌴<br><button type="button" id="lock" hidden>🔒 Lock on this phone</button></footer>
+</main>
+<script src="config.js"></script>
+<script src="core.js"></script>
+<script src="plan.js"></script>
 </body>
 </html>

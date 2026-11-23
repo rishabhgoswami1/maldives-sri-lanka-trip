@@ -16,7 +16,7 @@
   <span class="eyebrow">🇲🇻 Maldives / 🇱🇰 Sri Lanka</span>
   <h1>What to bring</h1>
   <p>Tap to tick, ＋ to add. You both see the same list, live.</p>
-  <a class="cta-hero" href="day-plan.html"><span>🗺️</span><span><b>Day-by-day plan</b><small>Each day: where, when, and the map</small></span><span class="arrow">→</span></a>
+  <a class="cta-hero" href="day-plan.html"><span>🗺️</span><span><b>Day-by-day plan</b><small>Each day, with the map</small></span><span class="arrow">→</span></a>
 </div></div>
 <main>
 
@@ -35,18 +35,18 @@
 </div>
 
 <section id="gate" class="gate" hidden>
-  <h2>🔒 This list is private</h2>
-  <p id="gate-msg">Open it with the full link Rishabh sent you, or paste that link here.</p>
+  <h2>🔒 Private</h2>
+  <p id="gate-msg">Enter the trip password.</p>
   <form id="gate-form">
-    <input id="gate-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste the link" aria-label="The link to the list">
+    <input id="gate-input" type="password" autocomplete="current-password" autocapitalize="off" spellcheck="false" placeholder="Password" aria-label="Trip password">
     <button type="submit">Open</button>
   </form>
-  <p class="note">The <a href="day-plan.html">day-by-day plan</a> opens without it.</p>
 </section>
 
-<footer>Have a wonderful trip! 🌴</footer>
+<footer>Have a wonderful trip! 🌴<br><button type="button" id="lock" hidden>🔒 Lock on this phone</button></footer>
 </main>
 <script src="config.js"></script>
+<script src="core.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
