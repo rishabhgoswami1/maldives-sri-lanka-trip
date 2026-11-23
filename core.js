@@ -41,7 +41,7 @@ window.Trip = (function () {
 
   function derive(password) {
     var enc = new TextEncoder();
-    return crypto.subtle.importKey('raw', enc.encode(password.trim().normalize('NFKC')), 'PBKDF2', false, ['deriveBits'])
+    return crypto.subtle.importKey('raw', enc.encode(password.trim().toLowerCase().normalize('NFKC')), 'PBKDF2', false, ['deriveBits'])
       .then(function (material) {
         return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(SALT), iterations: ROUNDS }, material, 256);
       })
