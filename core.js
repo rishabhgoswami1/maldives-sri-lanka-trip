@@ -8,7 +8,8 @@
 window.Trip = (function () {
   'use strict';
   var SALT = 'maldives-sri-lanka-trip-2026';
-  var ROUNDS = 250000;
+  var ROUNDS = 600000;   // slow on purpose: every guess at the password costs this much work
+  var TRIES_STORE = 'mlsl-tries';
   var KEY_STORE = 'mlsl-key-v2';
   var DATA_STORES = ['mlsl-bring-cache-v1', 'mlsl-bring-queue-v1', 'mlsl-plan-cache-v1', 'mlsl-key'];
 
@@ -26,6 +27,17 @@ window.Trip = (function () {
 
   var key = lsGet(KEY_STORE) || '';
   var onReady = null;
+
+  // A pause after 5 wrong passwords in a row: 30 s, then longer, up to 5 minutes. It only slows down
+  // guessing on this page; what really keeps guessers out is a password that isn't guessable.
+  var tries = { n: 0, until: 0 };
+  try { tries = JSON.parse(lsGet(TRIES_STORE)) || tries; } catch (e) {}
+  function waitLeft() { return Math.max(0, Math.ceil((tries.until - Date.now()) / 1000)); }
+  function wrongTry() {
+    tries.n += 1;
+    if (tries.n >= 5) tries.until = Date.now() + Math.min(300, 30 * (tries.n - 4)) * 1000;
+    lsSet(TRIES_STORE, JSON.stringify(tries));
+  }
 
   function derive(password) {
     var enc = new TextEncoder();
@@ -67,13 +79,18 @@ window.Trip = (function () {
       e.preventDefault();
       var input = $('gate-input'), button = $('gate-form').querySelector('button');
       if (!input.value.trim()) { input.focus(); return; }
+      if (waitLeft()) { $('gate-msg').textContent = 'Too many wrong tries. Wait ' + waitLeft() + ' seconds, then try again.'; return; }
       button.disabled = true; $('gate-msg').textContent = 'Checking…';
       derive(input.value).then(function (k) {
         return fetch(dbRoot + '/lists/' + k + '/bring.json?shallow=true').then(function (r) {
           button.disabled = false;
-          if (r.status === 401 || r.status === 403) { $('gate-msg').textContent = 'That password isn\'t right. Try again.'; input.select(); return; }
+          if (r.status === 401 || r.status === 403) {
+            wrongTry();
+            $('gate-msg').textContent = waitLeft() ? 'That password isn\'t right. Wait ' + waitLeft() + ' seconds before the next try.' : 'That password isn\'t right. Try again.';
+            input.select(); return;
+          }
           if (!r.ok) throw new Error('unexpected');
-          key = k; lsSet(KEY_STORE, k); input.value = '';
+          key = k; lsSet(KEY_STORE, k); lsDel(TRIES_STORE); tries = { n: 0, until: 0 }; input.value = '';
           open();
         });
       }).catch(function () {
