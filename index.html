@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Maldives / Sri Lanka: what to bring</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="hero"><div class="hero-inner">
+  <span class="eyebrow">🇲🇻 Maldives / 🇱🇰 Sri Lanka · 11–20 Dec</span>
+  <h1>What to bring</h1>
+  <p>Tap to tick, ＋ to add. You both see the same list, live.</p>
+  <a class="cta-hero" href="day-plan.html"><span>🗺️</span><span><b>Day-by-day plan</b><small>Each day: where, when, and the map</small></span><span class="arrow">→</span></a>
+</div></div>
+<main>
+
+<div id="app" hidden>
+  <div class="who" role="group" aria-label="Whose list">
+    <button type="button" id="who-rishabh" aria-pressed="true">Rishabh<small></small></button>
+    <button type="button" id="who-divya" aria-pressed="false">Divya<small></small></button>
+  </div>
+  <div class="progress"><div class="meter"><span id="meter"></span></div><div class="count" id="count"></div></div>
+  <div class="bar">
+    <div class="sync" id="sync" role="status">Connecting…</div>
+    <button type="button" id="edit" aria-pressed="false">✎ Edit list</button>
+  </div>
+  <div id="lists"></div>
+  <div class="foot-actions"><button type="button" id="untick">Untick everything on this list</button></div>
+</div>
+
+<section id="gate" class="gate" hidden>
+  <h2>🔒 This list is private</h2>
+  <p id="gate-msg">Open it with the full link Rishabh sent you, or paste that link here.</p>
+  <form id="gate-form">
+    <input id="gate-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste the link" aria-label="The link to the list">
+    <button type="submit">Open</button>
+  </form>
+  <p class="note">The <a href="day-plan.html">day-by-day plan</a> opens without it.</p>
+</section>
+
+<footer>Have a wonderful trip! 🌴</footer>
+</main>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
