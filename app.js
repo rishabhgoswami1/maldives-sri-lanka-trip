@@ -1,4 +1,4 @@
-/* Shared bring list for the Maldives / Sri Lanka trip.
+/* Shared checklist (things to do before flying, things to bring) for the Maldives / Sri Lanka trip.
 
    The whole list (items and ticks) lives in a Firebase Realtime Database at
      <db>/lists/<key>/bring/<itemId> = { who, cat, text, ord, done? }
@@ -16,6 +16,7 @@
   ];
   // Sections, in page order. An item whose "cat" isn't listed here still shows, in a section of its own.
   var CATS = [
+    { id: 'todo', label: '✅ To do before you fly' },
     { id: 'docs', label: '🛂 Documents' },
     { id: 'money', label: '💳 Money and cards' },
     { id: 'tech', label: '🔌 Phone and chargers' },
@@ -191,7 +192,7 @@
     var open = el('button', '', '＋ Add'); open.type = 'button';
     var form = el('form'); form.hidden = true;
     var input = el('input'); input.type = 'text'; input.maxLength = MAX_TEXT;
-    input.placeholder = 'What to bring?'; input.autocomplete = 'off';
+    input.placeholder = cat === 'todo' ? 'What to do?' : 'What to bring?'; input.autocomplete = 'off';
     input.setAttribute('enterkeyhint', 'done'); input.setAttribute('aria-label', 'New item in ' + catLabel(cat));
     var go = el('button', 'go', 'Add'); go.type = 'submit';
     var x = el('button', 'x', '✕'); x.type = 'button'; x.setAttribute('aria-label', 'Close');
@@ -259,7 +260,7 @@
       var done = mine.filter(function (id) { return items[id].done === true; }).length;
       var btn = $('who-' + p.id);
       btn.setAttribute('aria-pressed', String(p.id === who));
-      btn.querySelector('small').textContent = done + ' / ' + mine.length + ' packed';
+      btn.querySelector('small').textContent = done + ' / ' + mine.length + ' done';
       if (p.id === who) {
         $('meter').style.width = (mine.length ? done / mine.length * 100 : 0) + '%';
         $('count').textContent = done + ' / ' + mine.length;
