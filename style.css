@@ -297,3 +297,24 @@ a.pin:hover { text-decoration: underline; }
   .stop { grid-template-columns: 56px 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---- Trip identity (25 Nov): this is the Maldives / Sri Lanka site, not the Phuket one. ----
+   A stripe in Sri Lanka's flag colours at the very top, a palm / lighthouse / water-villa drawing in the
+   header, and a faint palm-and-wave pattern behind the page. All drawn here; no image files. */
+body::before {
+  content: ""; display: block; height: 6px;
+  background: linear-gradient(90deg, #8d153a 0 46%, #ffbe29 46% 64%, #00534e 64% 82%, #eb7400 82% 100%);
+}
+body { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180' fill='none' stroke='%230b7f8a' stroke-opacity='.075' stroke-width='2' stroke-linecap='round'%3E %3Cpath d='M12 44 q10 -7 20 0 t20 0 t20 0'/%3E%3Cpath d='M98 138 q10 -7 20 0 t20 0 t20 0'/%3E %3Cpath d='M126 58 C118 46 106 44 98 50 M126 58 C122 44 112 36 102 36 M126 58 C128 44 138 38 148 40 M126 58 C136 50 146 54 150 64 M126 58 C123 72 123 84 126 96'/%3E %3Cpath d='M38 132 C32 122 22 120 16 126 M38 132 C35 120 27 114 19 114 M38 132 C40 120 48 116 56 118 M38 132 C46 126 54 130 57 138 M38 132 C36 144 36 152 38 162'/%3E %3C/svg%3E"); background-size: 180px 180px; }
+@media (prefers-color-scheme: dark) { body { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180' fill='none' stroke='%234fc7cf' stroke-opacity='.06' stroke-width='2' stroke-linecap='round'%3E %3Cpath d='M12 44 q10 -7 20 0 t20 0 t20 0'/%3E%3Cpath d='M98 138 q10 -7 20 0 t20 0 t20 0'/%3E %3Cpath d='M126 58 C118 46 106 44 98 50 M126 58 C122 44 112 36 102 36 M126 58 C128 44 138 38 148 40 M126 58 C136 50 146 54 150 64 M126 58 C123 72 123 84 126 96'/%3E %3Cpath d='M38 132 C32 122 22 120 16 126 M38 132 C35 120 27 114 19 114 M38 132 C40 120 48 116 56 118 M38 132 C46 126 54 130 57 138 M38 132 C36 144 36 152 38 162'/%3E %3C/svg%3E"); } }
+.hero::before {
+  content: ""; position: absolute; right: -6px; bottom: 34px;
+  width: min(92%, 460px); aspect-ratio: 420 / 230;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 230' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E %3Ccircle cx='318' cy='72' r='42' fill='%23ffd27a' fill-opacity='.22'/%3E %3Cpath fill='%23fff' fill-opacity='.2' d='M352 206 L357 118 H353 V112 H358 V98 H355 L365 86 L375 98 H372 V112 H377 V118 H373 L378 206 Z M326 212 Q365 194 404 212 Z'/%3E %3Cpath stroke='%23fff' stroke-opacity='.26' stroke-width='5' d='M262 208 C258 172 266 142 276 114 M276 114 C254 98 232 100 216 118 M276 114 C262 90 242 80 222 84 M276 114 C274 92 266 78 254 68 M276 114 C284 90 300 80 318 84 M276 114 C298 102 316 108 326 126'/%3E %3Cpath stroke='%23fff' stroke-opacity='.18' stroke-width='4' d='M214 210 C212 184 218 162 226 144 M226 144 C210 132 194 134 182 146 M226 144 C216 126 202 120 188 122 M226 144 C232 126 244 120 258 124 M226 144 C242 136 256 142 262 156'/%3E %3Cpath fill='%23fff' fill-opacity='.16' d='M92 178 L122 154 L152 178 H142 V192 H102 V178 Z'/%3E %3Cpath stroke='%23fff' stroke-opacity='.16' stroke-width='3' d='M106 193 V210 M122 193 V210 M138 193 V210 M144 190 H178'/%3E %3Cpath stroke='%23fff' stroke-width='3' stroke-opacity='.24' d='M0 214 q15 -9 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0'/%3E %3Cpath stroke='%23fff' stroke-width='3' stroke-opacity='.14' d='M-15 226 q15 -9 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0'/%3E %3C/svg%3E") no-repeat right bottom / contain;
+  pointer-events: none;
+}
+.hero { padding-bottom: 150px; }
+.hero h1.trip { font-size: 31px; margin-top: 14px; text-shadow: 0 1px 12px rgba(6, 40, 60, .35); }
+.hero h1.trip .sep { opacity: .6; font-weight: 600; margin: 0 2px; }
+.hero .eyebrow-row { margin-top: 12px; }
+@media (max-width: 380px) { .hero h1.trip { font-size: 26px; } }
