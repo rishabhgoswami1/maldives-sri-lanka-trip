@@ -318,3 +318,12 @@ body { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org
 .hero h1.trip .sep { opacity: .6; font-weight: 600; margin: 0 2px; }
 .hero .eyebrow-row { margin-top: 12px; }
 @media (max-width: 380px) { .hero h1.trip { font-size: 26px; } }
+
+/* Delete needs a two-second press (app.js): the button fills up while it is held. */
+.row .acts .del { width: auto; min-width: 34px; padding: 0 9px; font-size: 13px; font-weight: 700; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; white-space: nowrap; }
+.row .acts .del.holding {
+  color: #fff; border-color: var(--danger);
+  background: linear-gradient(var(--danger), var(--danger)) no-repeat left / 0% 100%;
+  animation: holdfill 2s linear forwards;
+}
+@keyframes holdfill { to { background-size: 100% 100%; } }

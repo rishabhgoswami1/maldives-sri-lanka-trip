@@ -31,6 +31,7 @@
   ];
   var LIST = 'bring';
   var MAX_TEXT = 200;
+  var HOLD_MS = 2000;   // how long the ✕ must be held to delete an item
   var store = { who: 'mlsl-who', cache: 'mlsl-bring-cache-v1', queue: 'mlsl-bring-queue-v1' };
 
   var $ = function (id) { return document.getElementById(id); };
@@ -230,7 +231,7 @@
     label.appendChild(box); label.appendChild(text);
     var acts = el('div', 'acts');
     var ren = el('button', 'ren', '✎'); ren.type = 'button'; ren.setAttribute('aria-label', 'Rename');
-    var del = el('button', 'del', '✕'); del.type = 'button'; del.setAttribute('aria-label', 'Remove');
+    var del = el('button', 'del', '✕'); del.type = 'button'; del.setAttribute('aria-label', 'Delete: press and hold for two seconds');
     acts.appendChild(ren); acts.appendChild(del);
     root.appendChild(label); root.appendChild(acts);
 
@@ -242,10 +243,29 @@
       next = next.replace(/\s+/g, ' ').trim().slice(0, MAX_TEXT);
       if (next && next !== cur) change({ op: 'patch', id: id, val: { text: next } });
     });
-    del.addEventListener('click', function () {
-      var cur = (view()[id] || {}).text || 'this item';
-      if (confirm('Remove "' + cur + '" from the list?')) change({ op: 'del', id: id });
-    });
+    // Deleting is awkward on purpose, so it can't happen by accident: switch on "Edit list", press and
+    // hold the ✕ for two seconds, then confirm. A short tap only says how.
+    var holdTimer = null, hintTimer = null;
+    function holdStart(e) {
+      if (e.button !== undefined && e.button > 0) return;
+      clearTimeout(hintTimer); del.textContent = '✕';
+      del.classList.add('holding');
+      holdTimer = setTimeout(function () {
+        del.classList.remove('holding');
+        var cur = (view()[id] || {}).text || 'this item';
+        if (confirm('Delete "' + cur + '" for good? This removes it for both of you.')) change({ op: 'del', id: id });
+      }, HOLD_MS);
+    }
+    function holdEnd() {
+      clearTimeout(holdTimer);
+      if (!del.classList.contains('holding')) return;
+      del.classList.remove('holding');
+      del.textContent = 'Hold 2 s';
+      hintTimer = setTimeout(function () { del.textContent = '✕'; }, 1800);
+    }
+    del.addEventListener('pointerdown', holdStart);
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { del.addEventListener(ev, holdEnd); });
+    del.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     return { root: root, box: box, text: text };
   }
 
