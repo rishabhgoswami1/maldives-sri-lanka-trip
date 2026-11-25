@@ -259,6 +259,13 @@ footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 1
 .days a.today { border-color: var(--accent); background: var(--accent-soft); }
 .leg { margin: 24px 4px 0; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .day { scroll-margin-top: 10px; }
+/* A day with a soft red wash ("tint": "rose" in the plan). Today's outline still shows on top of it. */
+.day.tint-rose, .days a.tint-rose { --rose-bg: #fde9ea; --rose-line: #f0c6c9; }
+@media (prefers-color-scheme: dark) {
+  .day.tint-rose, .days a.tint-rose { --rose-bg: #2e1a1f; --rose-line: #53292f; }
+}
+.day.tint-rose { background: var(--rose-bg); border-color: var(--rose-line); --line: var(--rose-line); }
+.days a.tint-rose { background: var(--rose-bg); border-color: var(--rose-line); }
 .day.today { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft), var(--shadow); }
 .day .date { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--sun); }
 .day h2 { margin-top: 2px; display: block; }
