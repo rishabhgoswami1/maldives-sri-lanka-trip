@@ -259,13 +259,33 @@ footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 1
 .days a.today { border-color: var(--accent); background: var(--accent-soft); }
 .leg { margin: 24px 4px 0; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .day { scroll-margin-top: 10px; }
-/* A day with a soft red wash ("tint": "rose" in the plan). Today's outline still shows on top of it. */
-.day.tint-rose, .days a.tint-rose { --rose-bg: #fde9ea; --rose-line: #f0c6c9; }
-@media (prefers-color-scheme: dark) {
-  .day.tint-rose, .days a.tint-rose { --rose-bg: #2e1a1f; --rose-line: #53292f; }
+/* A day with a red glow ("tint": "rose" in the plan) and a label ("badge" in the plan).
+   Today's outline still shows on top of the glow. */
+.day.tint-rose, .days a.tint-rose {
+  --rose-bg: #fde6e8; --rose-line: #efb9be; --rose-wash: rgba(226, 54, 76, .26);
+  --rose-glow: rgba(214, 40, 62, .34); --rose-ink: #9c1428; --rose-pill: #f8c9ce;
 }
-.day.tint-rose { background: var(--rose-bg); border-color: var(--rose-line); --line: var(--rose-line); }
-.days a.tint-rose { background: var(--rose-bg); border-color: var(--rose-line); }
+@media (prefers-color-scheme: dark) {
+  .day.tint-rose, .days a.tint-rose {
+    --rose-bg: #2c171c; --rose-line: #70303a; --rose-wash: rgba(255, 72, 96, .24);
+    --rose-glow: rgba(255, 64, 88, .36); --rose-ink: #ffc2c8; --rose-pill: #5c232d;
+  }
+}
+.day.tint-rose {
+  background:
+    radial-gradient(130% 85% at 100% 0%, var(--rose-wash) 0%, transparent 62%),
+    radial-gradient(90% 60% at 0% 100%, var(--rose-wash) 0%, transparent 60%),
+    var(--rose-bg);
+  border-color: var(--rose-line); --line: var(--rose-line);
+  box-shadow: 0 0 0 1px var(--rose-line), 0 0 30px 3px var(--rose-glow);
+}
+.days a.tint-rose { background: var(--rose-bg); border-color: var(--rose-line); box-shadow: 0 0 0 1px var(--rose-line), 0 2px 7px var(--rose-glow); }
+.day-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.badge {
+  font-size: 12.5px; font-weight: 800; white-space: nowrap;
+  padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+}
+.day.tint-rose .badge { background: var(--rose-pill); color: var(--rose-ink); box-shadow: 0 0 12px var(--rose-glow); }
 .day.today { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft), var(--shadow); }
 .day .date { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--sun); }
 .day h2 { margin-top: 2px; display: block; }

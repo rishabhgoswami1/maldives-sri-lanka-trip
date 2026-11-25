@@ -56,9 +56,12 @@
 
       if (d.leg && d.leg !== leg) { leg = d.leg; host.appendChild(el('div', 'leg', leg)); }
       var sec = el('section', 'day'); sec.id = d.id;
-      // A day can carry a soft colour wash: "tint": "rose" on the day in plan.json.
+      // A day can carry a red glow: "tint": "rose" on the day in plan.json.
       if (d.tint === 'rose') { sec.classList.add('tint-rose'); chip.classList.add('tint-rose'); }
-      sec.appendChild(el('div', 'date', d.label || when.label));
+      var top = el('div', 'day-top');
+      top.appendChild(el('div', 'date', d.label || when.label));
+      if (d.badge) top.appendChild(el('span', 'badge', d.badge));   // a short label for the day, from the plan
+      sec.appendChild(top);
       var h = el('h2', '', d.title || '');
       if (d.sub) h.appendChild(el('span', 'sub', d.sub));
       sec.appendChild(h);
