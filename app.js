@@ -31,7 +31,7 @@
   ];
   var LIST = 'bring';
   var MAX_TEXT = 200;
-  var HOLD_MS = 2000;   // how long the ✕ must be held to delete an item
+  var HOLD_MS = 1000;   // how long the ✕ must be held to delete an item
   var store = { who: 'mlsl-who', cache: 'mlsl-bring-cache-v1', queue: 'mlsl-bring-queue-v1' };
 
   var $ = function (id) { return document.getElementById(id); };
@@ -231,7 +231,7 @@
     label.appendChild(box); label.appendChild(text);
     var acts = el('div', 'acts');
     var ren = el('button', 'ren', '✎'); ren.type = 'button'; ren.setAttribute('aria-label', 'Rename');
-    var del = el('button', 'del', '✕'); del.type = 'button'; del.setAttribute('aria-label', 'Delete: press and hold for two seconds');
+    var del = el('button', 'del', '✕'); del.type = 'button'; del.setAttribute('aria-label', 'Delete: press and hold for one second');
     acts.appendChild(ren); acts.appendChild(del);
     root.appendChild(label); root.appendChild(acts);
 
@@ -244,7 +244,7 @@
       if (next && next !== cur) change({ op: 'patch', id: id, val: { text: next } });
     });
     // Deleting is awkward on purpose, so it can't happen by accident: switch on "Edit list", press and
-    // hold the ✕ for two seconds, then confirm. A short tap only says how.
+    // hold the ✕ for one second, then confirm. A short tap only says how.
     var holdTimer = null, hintTimer = null;
     function holdStart(e) {
       if (e.button !== undefined && e.button > 0) return;
@@ -260,7 +260,7 @@
       clearTimeout(holdTimer);
       if (!del.classList.contains('holding')) return;
       del.classList.remove('holding');
-      del.textContent = 'Hold 2 s';
+      del.textContent = 'Hold 1 s';
       hintTimer = setTimeout(function () { del.textContent = '✕'; }, 1800);
     }
     del.addEventListener('pointerdown', holdStart);

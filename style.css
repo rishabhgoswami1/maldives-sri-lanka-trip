@@ -351,6 +351,6 @@ body { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org
 .row .acts .del.holding {
   color: #fff; border-color: var(--danger);
   background: linear-gradient(var(--danger), var(--danger)) no-repeat left / 0% 100%;
-  animation: holdfill 2s linear forwards;
+  animation: holdfill 1s linear forwards;
 }
 @keyframes holdfill { to { background-size: 100% 100%; } }
